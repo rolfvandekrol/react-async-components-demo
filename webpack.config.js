@@ -49,10 +49,20 @@ module.exports = {
   context: path.resolve(__dirname),
   entry: {
     'js/app': './src/ts/app.tsx',
+    'js/generic': glob.sync('./src/ts/components/generic/**/*.ts*'),
+    'js/vendor': [
+      'react',
+      'react-dom',
+      'react-router',
+      'react-router-dom',
+      'regenerator-runtime',
+    ],
   },
   output: {
     path: path.join(__dirname, './public'),
     filename: "[name].[chunkhash].js",
+    chunkFilename: "js/[name].[chunkhash].js",
+    publicPath: "/",
   },
   module: {
     rules: [
@@ -63,6 +73,13 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+        names: [
+          "js/generic",
+          "js/vendor",
+        ],
+        filename: '[name].[chunkhash].js',
+    }),
     new StatsPlugin()
   ],
   resolve: {
